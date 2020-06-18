@@ -1,0 +1,46 @@
+{
+     Open_data_Canada:
+          {
+               Create_datetime:'',
+               Subjects:[
+                    {    # Multi - Process 1
+                         Subj_name:Agriculture,
+                         Subj_url:'',
+                         Subj_pages:[
+                              {
+                                   Page_num:'',
+                                   Page_url:'',
+                                   Page_records:[            
+                                        {
+                                             Record_ID:
+                                             Record_name:
+                                             Record_description:
+                                             Date_published:
+                                             Date_last_updated:
+                                             Record_URL:
+                                             Record_files:[
+                                                  {
+                                                       File_name:
+                                                       File_format:
+                                                       File_language:
+                                                       File_url:
+                                                       Downloaded:
+                                                       Saved_path:
+                                                  },
+                                             ]
+                                        },
+                                   ]         
+                              },
+                              {...}
+                         ]      
+                    },
+                    {   # Multi - Process 2
+                         Art,Music,Literature: {...}
+                    },
+                    {    # Multi - Process 3
+                         Economics and Industry:{...}
+                    }
+                         ...
+               ]         
+          }               
+}

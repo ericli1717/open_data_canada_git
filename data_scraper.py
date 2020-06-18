@@ -25,8 +25,8 @@ class data_scr():
     def __init__(self, data_url):
         self.host_url = data_url
         self.inti_dt = datetime.now(get_localzone())
-        self.data = {}
-        self.open_data = json.loads(json.dumps(self.data))
+        #self.data = {}
+        #self.open_data = json.loads(json.dumps(self.data))
 
     def request_data(self, url, fp1, fp2, fp3):
         page = http.get(url, timeout=DEFAULT_TIMEOUT)
@@ -34,7 +34,7 @@ class data_scr():
         contents = soup.find_all(fp1, {fp2: fp3})
         return soup, contents
 
-    def find_subj_page(self):
+    def find_subj_page(self,subj_names): # find all/specified subjects and their data from given web address https://open.canada.ca/en/open-data
         subj_list = []
         subj_dict = {}
         subj_no = 0
@@ -42,17 +42,26 @@ class data_scr():
         for host_subject in host_data:
             host_category = host_subject.find_all("a", href=True)
             for host_cate_data in host_category:
-                subj_list.append({})
-                subj_dict = {
-                    "Subj_name": host_cate_data.find("span", {"class": "small"}).text,
-                    "Subj_url": host_cate_data['href'], "Subj_pages": self.find_subj_all_pages(host_cate_data['href'])
-                }
-                subj_list[subj_no] = subj_dict
-                subj_no += 1
-                print(host_cate_data.find("span", {"class": "small"}).text)
+                if subj_names.replace(" ","").upper() == "ALL":
+                   subj_names =  host_cate_data.find("span", {"class": "small"}).text
+                if host_cate_data.find("span", {"class": "small"}).text == subj_names.strip():
+                    Print ("Found the specified subject, continue to analyzing it's record sets")
+                    subj_list.append({})
+                    subj_dict = {
+                        "Subj_name": host_cate_data.find("span", {"class": "small"}).text,
+                        "Subj_url": host_cate_data['href'], "Subj_pages": self.find_subj_all_pages(host_cate_data['href']) #Search all of the records under this subject
+                    }
+                    subj_list[subj_no] = subj_dict
+                    subj_no += 1
+                    print(host_cate_data.find("span", {"class": "small"}).text)
+                else:
+                    print ("No Subject is specified, try next...")
+                    continue
+        if subj_no == 0:
+            print ("Did not find the inputed subject, existing")        
         return subj_list
 
-    def find_subj_all_pages(self, subj_url):
+    def find_subj_all_pages(self, subj_url): # This fuction generate all web pages (search feature) address under the specific subject, then pass each address over to find_record_page function to scan each individual pages
         urls = []
         page_list = []
         cate_pages, cate_page_data = self.request_data(subj_url, 'div', 'class', 'col-md-4 col-md-pull-8')
@@ -79,7 +88,7 @@ class data_scr():
                 page_list[num - 1] = page_dict
         return page_list
 
-    def find_record_file(self, record_page_url):
+    def find_record_file(self, record_page_url): # Prepare data for each file under every records
         record_file_soup, record_data = self.request_data(record_page_url, 'div', 'class', 'panel panel-primary')
         rec_id = ''
         for important_cont in record_data:
@@ -122,11 +131,9 @@ class data_scr():
             # print (file_list)
         return rec_id, file_list
 
-    def find_record_page(self, categ_list_url):
-
+    def find_record_page(self, categ_list_url):  # Prepare data for each record
         record_page_soup, record_page_data = self.request_data(categ_list_url, 'div', 'class',
                                                                'panel panel-default mrg-tp-sm')
-
         if record_page_data:
             record_list = []
             record_no = 0
@@ -162,7 +169,7 @@ class data_scr():
                 record_list[record_no] = record_dict
                 record_no += 1
             # print (record_list)
-            return record_list
+        return record_list
 
 if __name__ == '__main__':
 
@@ -175,7 +182,10 @@ if __name__ == '__main__':
     data = {}
     data = {
         "Create_datetime": datetime.now().strftime("%A, %d. %B %Y %I:%M%p"),
-        "Subjects": temp_data.find_subj_page()
+        
+        #"Subjects": temp_data.find_subj_page("all")    # this is where you specify what subject you want to download, input "all" will download all of the subjects from website https://open.canada.ca/en/open-data:
+        #"Subjects": temp_data.find_subj_page("Economics and I") #if you input an incorrect subject name like this, scraper outputs "Did not find the inputed subject, existing" then wrtie an empty subject list into open_data.txt  
+        "Subjects": temp_data.find_subj_page("Economics and Industry")  # if you input a correct subject name, then only the data under this subject will be scraped
         }
 
     open_data = json.dumps(data, ensure_ascii=False)
