@@ -45,7 +45,7 @@ class data_scr():
                 if subj_names.replace(" ","").upper() == "ALL":
                    subj_names =  host_cate_data.find("span", {"class": "small"}).text
                 if host_cate_data.find("span", {"class": "small"}).text == subj_names.strip():
-                    Print ("Found the specified subject, continue to analyzing it's record sets")
+                    print ("Found the specified subject, continue to analyzing it's record sets")
                     subj_list.append({})
                     subj_dict = {
                         "Subj_name": host_cate_data.find("span", {"class": "small"}).text,
@@ -58,7 +58,8 @@ class data_scr():
                     print ("No Subject is specified, try next...")
                     continue
         if subj_no == 0:
-            print ("Did not find the inputed subject, existing")        
+            print ("Did not find the inputed subject, existing")     
+        print ("Data scraping is completed")   
         return subj_list
 
     def find_subj_all_pages(self, subj_url): # This fuction generate all web pages (search feature) address under the specific subject, then pass each address over to find_record_page function to scan each individual pages
@@ -127,8 +128,6 @@ class data_scr():
                                  'Saved_path': ''}
                     file_list[file_no] = file_dict
                     file_no += 1
-
-            # print (file_list)
         return rec_id, file_list
 
     def find_record_page(self, categ_list_url):  # Prepare data for each record
@@ -181,14 +180,15 @@ if __name__ == '__main__':
 
     data = {}
     data = {
-        "Create_datetime": datetime.now().strftime("%A, %d. %B %Y %I:%M%p"),
+        "Create_datetime":datetime.now().strftime("%A, %d. %B %Y %I:%M%p"),
         
         #"Subjects": temp_data.find_subj_page("all")    # this is where you specify what subject you want to download, input "all" will download all of the subjects from website https://open.canada.ca/en/open-data:
         #"Subjects": temp_data.find_subj_page("Economics and I") #if you input an incorrect subject name like this, scraper outputs "Did not find the inputed subject, existing" then wrtie an empty subject list into open_data.txt  
-        "Subjects": temp_data.find_subj_page("Economics and Industry")  # if you input a correct subject name, then only the data under this subject will be scraped
+        "Subjects": temp_data.find_subj_page("Military")  # if you input a correct subject name, then only the data under this subject will be scraped
         }
 
-    open_data = json.dumps(data, ensure_ascii=False)
+    #open_data = json.dumps(data, ensure_ascii=False)
 
-    with open('open_data.txt', 'w') as outfile:
-        json.dump(open_data, outfile)
+    with open('open_data.json', 'w') as outfile:
+        #json.dump(open_data, outfile)
+        json.dump(data, outfile)
