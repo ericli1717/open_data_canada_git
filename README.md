@@ -7,4 +7,4 @@ This is a Python data scraper for scraping metadata for all English data sets fr
 This the structure map of the JSON file.
 
 #open_data.json
-It is a JSON file example that I scrapered under "Military" subject.
+It is a JSON file example that I scraped under "Military" subject.
