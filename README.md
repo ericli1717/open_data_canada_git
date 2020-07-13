@@ -9,4 +9,4 @@ This is a Python data scraper for scraping metadata for all English and French d
 This the structure map of the JSON file.
 
 #open_data.json
-It is a JSON file example that I scraped under "Military" subject.
+It is a JSON example file that I scraped under "Military" subject.
